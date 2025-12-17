@@ -1,0 +1,2861 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub Pessoal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #09090b;
+            --bg-secondary: #18181b;
+            --bg-card: #1f1f23;
+            --bg-elevated: #27272a;
+            --bg-hover: #2e2e33;
+            --accent: #8b5cf6;
+            --accent-light: #a78bfa;
+            --accent-dark: #7c3aed;
+            --accent-glow: rgba(139, 92, 246, 0.15);
+            --success: #10b981;
+            --success-light: #34d399;
+            --success-glow: rgba(16, 185, 129, 0.15);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.15);
+            --danger: #ef4444;
+            --danger-light: #f87171;
+            --danger-glow: rgba(239, 68, 68, 0.15);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --border: #27272a;
+            --border-light: #3f3f46;
+            --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+            --gradient-2: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
+            --shadow-glow: 0 0 40px rgba(139, 92, 246, 0.1);
+        }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--bg-secondary);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 100;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 40px;
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .nav-section { margin-bottom: 8px; }
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            padding: 8px 12px;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .nav-item.active { background: var(--accent-glow); color: var(--accent-light); }
+        .nav-item svg { width: 20px; height: 20px; stroke-width: 2; }
+        .nav-badge {
+            position: absolute;
+            right: 12px;
+            background: var(--danger);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            min-width: 22px;
+            text-align: center;
+        }
+        /* Main */
+        .main {
+            flex: 1;
+            margin-left: 240px;
+            padding: 32px;
+            min-height: 100vh;
+        }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+        .page-header { margin-bottom: 32px; }
+        .page-title { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+        .page-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+        .section-header {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 28px 0 16px;
+            color: var(--text-secondary);
+        }
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            margin-bottom: 20px;
+        }
+        .card-glow { box-shadow: var(--shadow-glow); }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .card-title { font-weight: 600; display: flex; align-items: center; gap: 10px; color: var(--text-secondary); }
+        .card-title svg { width: 18px; height: 18px; }
+        /* Grid */
+        .grid { display: grid; gap: 20px; }
+        .grid-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+        /* Score Ring */
+        .score-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px; }
+        .score-ring {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: conic-gradient(var(--accent) calc(var(--score) * 3.6deg), var(--bg-secondary) 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 20px var(--accent-glow); } 50% { box-shadow: 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); } }
+        .score-ring::before {
+            content: '';
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            background: var(--bg-card);
+            border-radius: 50%;
+        }
+        .score-value { position: relative; font-size: 2rem; font-weight: 800; background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .score-label { margin-top: 16px; color: var(--text-muted); font-weight: 500; }
+        /* Stat Boxes */
+        .stat-box {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value { font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+        .stat-value.accent { color: var(--accent-light); }
+        .stat-value.success { color: var(--success-light); }
+        .stat-value.danger { color: var(--danger-light); }
+        .stat-value.warning { color: var(--warning); }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); }
+        /* Buttons */
+        .btn {
+            background: var(--gradient-1);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3); }
+        .btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+        .btn-secondary { background: var(--bg-elevated); }
+        .btn-danger { background: var(--danger); }
+        .btn-success { background: var(--success); }
+        /* Form */
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-input {
+            width: 100%;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 14px 16px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-row { display: flex; gap: 16px; }
+        .form-row .form-group { flex: 1; }
+        /* Inline Form */
+        .inline-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .inline-form .form-group { margin-bottom: 0; flex: 1; min-width: 150px; }
+        .inline-form .form-input { padding: 12px; }
+        /* Task Items */
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            cursor: grab;
+        }
+        .task-item:active { cursor: grabbing; }
+        .task-item.dragging { opacity: 0.5; }
+        .task-item.drag-over { border: 2px dashed var(--accent); }
+        .task-item.completed { opacity: 0.6; }
+        .task-item.completed .task-name { text-decoration: line-through; color: var(--text-muted); }
+        .task-checkbox {
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .task-checkbox:hover { border-color: var(--accent); }
+        .task-checkbox.checked { background: var(--success); border-color: var(--success); }
+        .task-checkbox svg { width: 14px; height: 14px; color: white; display: none; }
+        .task-checkbox.checked svg { display: block; }
+        .task-content { flex: 1; min-width: 0; }
+        .task-name { font-weight: 600; margin-bottom: 4px; }
+        .task-detail { font-size: 0.85rem; color: var(--text-muted); }
+        .task-meta { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+        .task-tag {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        .task-tag.rotina { background: var(--success-glow); color: var(--success-light); }
+        .task-tag.afazer { background: var(--accent-glow); color: var(--accent-light); }
+        .task-tag.atrasado { background: var(--danger-glow); color: var(--danger-light); }
+        .task-actions { display: flex; gap: 8px; margin-left: auto; }
+        .task-btn {
+            background: var(--bg-secondary);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .task-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .task-btn.star-btn.active { color: var(--warning); }
+        .task-btn svg { width: 16px; height: 16px; }
+        /* Subtasks */
+        .subtask-list { margin-top: 12px; padding-left: 38px; }
+        .subtask-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-bottom: 1px dashed var(--border);
+        }
+        .subtask-item:last-child { border-bottom: none; }
+        .subtask-item.completed { color: var(--text-muted); text-decoration: line-through; }
+        .subtask-checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border-light);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .subtask-checkbox.checked { background: var(--success); border-color: var(--success); }
+        .subtask-checkbox svg { width: 10px; height: 10px; color: white; display: none; }
+        .subtask-checkbox.checked svg { display: block; }
+        /* Progress Bar */
+        .progress-bar {
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient-1);
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        .progress-fill.complete { background: var(--gradient-2); }
+        /* Meta Cards */
+        .meta-card {
+            background: var(--bg-elevated);
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        .meta-card.starred { border-color: var(--warning); box-shadow: 0 0 20px var(--warning-glow); }
+        .meta-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .meta-card-title { font-weight: 700; font-size: 1rem; }
+        .meta-card-type { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+        .meta-card-progress { font-size: 1.5rem; font-weight: 800; color: var(--accent-light); }
+        /* Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+        .modal-backdrop.active { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            animation: modalIn 0.3s ease;
+        }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(10px); } to { opacity: 1; transform: scale(1); } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+        .modal-title { font-size: 1.3rem; font-weight: 700; }
+        .modal-close {
+            background: var(--bg-elevated);
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+        /* Toggle */
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+        .toggle {
+            width: 48px;
+            height: 26px;
+            background: var(--bg-secondary);
+            border-radius: 13px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
+            border: 1px solid var(--border);
+        }
+        .toggle.active { background: var(--accent); border-color: var(--accent); }
+        .toggle::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+        .toggle.active::after { transform: translateX(22px); }
+        /* Days Selector */
+        .days-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+        .day-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .day-btn:hover { border-color: var(--accent); color: var(--text-primary); }
+        .day-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+        /* Subtasks Input */
+        .subtask-input-group { background: var(--bg-secondary); border-radius: 10px; padding: 12px; }
+        .subtask-input-row { display: flex; gap: 10px; margin-bottom: 8px; }
+        .subtask-input-row input {
+            flex: 1;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+        .subtask-input-row input:focus { outline: none; border-color: var(--accent); }
+        .subtasks-preview { max-height: 150px; overflow-y: auto; }
+        .subtask-preview-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            background: var(--bg-elevated);
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+        }
+        /* Transaction List */
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .transaction-info h4 { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+        .transaction-info span { font-size: 0.8rem; color: var(--text-muted); }
+        .transaction-amount { font-weight: 700; font-size: 1rem; }
+        .transaction-amount.income { color: var(--success-light); }
+        .transaction-amount.expense { color: var(--danger-light); }
+        .transaction-actions { display: flex; gap: 8px; margin-left: 12px; }
+        /* Gastos Fixos */
+        .gasto-fixo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .gasto-fixo-name { font-weight: 500; }
+        .gasto-fixo-value { color: var(--danger-light); font-weight: 600; }
+        /* Notes */
+        .note-card {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent);
+        }
+        .note-content { white-space: pre-wrap; margin-bottom: 10px; }
+        .note-date { font-size: 0.75rem; color: var(--text-muted); }
+        /* Filter */
+        .filter-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: var(--bg-elevated);
+            border-radius: 12px;
+        }
+        .filter-row .form-group { margin-bottom: 0; }
+        .filter-row .form-input { padding: 10px 12px; }
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .tab-btn.active { color: var(--accent-light); background: var(--accent-glow); }
+        /* Confetti */
+        .confetti-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100%) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        /* Notification Popup */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--accent);
+            border-radius: 16px;
+            padding: 20px 24px;
+            box-shadow: var(--shadow-lg);
+            z-index: 9998;
+            animation: slideIn 0.5s ease, slideOut 0.5s ease 4.5s forwards;
+            max-width: 350px;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+        .notification-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+        .notification-text { color: var(--text-secondary); font-size: 0.9rem; }
+        /* Mobile */
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main { margin-left: 0; padding: 20px; }
+            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .form-row { flex-direction: column; }
+            .inline-form { flex-direction: column; }
+        }
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+        .empty-state svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.5; }
+        
+        /* Calendar Styles */
+        .calendar-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+        }
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .calendar-nav {
+            display: flex;
+            gap: 8px;
+        }
+        .calendar-nav-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .calendar-nav-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--accent);
+        }
+        .calendar-nav-btn svg { width: 18px; height: 18px; }
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+        .calendar-weekday {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            padding: 8px 0;
+            text-transform: uppercase;
+        }
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-elevated);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            padding: 4px;
+            min-height: 60px;
+        }
+        .calendar-day:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent);
+        }
+        .calendar-day.empty {
+            background: transparent;
+            cursor: default;
+            border: none;
+        }
+        .calendar-day.empty:hover {
+            background: transparent;
+            border: none;
+        }
+        .calendar-day.selected {
+            border-color: var(--accent);
+            background: var(--accent-glow);
+        }
+        .calendar-day.today {
+            border-color: var(--warning);
+        }
+        .calendar-day-number {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+        .calendar-day.empty .calendar-day-number {
+            color: var(--text-muted);
+            opacity: 0.3;
+        }
+        .calendar-day-score {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 6px;
+            background: var(--bg-secondary);
+        }
+        .calendar-day-score.score-high {
+            background: var(--success-glow);
+            color: var(--success-light);
+        }
+        .calendar-day-score.score-medium {
+            background: var(--warning-glow);
+            color: var(--warning);
+        }
+        .calendar-day-score.score-low {
+            background: var(--danger-glow);
+            color: var(--danger-light);
+        }
+        .calendar-day-score.score-zero {
+            background: var(--bg-secondary);
+            color: var(--text-muted);
+        }
+        .calendar-day.future .calendar-day-score {
+            display: none;
+        }
+        .calendar-day.future .calendar-day-number {
+            color: var(--text-muted);
+        }
+        .calendar-legend {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+        }
+        .legend-dot.high { background: var(--success); }
+        .legend-dot.medium { background: var(--warning); }
+        .legend-dot.low { background: var(--danger); }
+        
+        /* Month summary */
+        .month-summary {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .month-stat {
+            background: var(--bg-elevated);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .month-stat-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .month-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        @media (max-width: 768px) {
+            .month-summary { grid-template-columns: repeat(2, 1fr); }
+            .calendar-day { min-height: 50px; }
+            .calendar-day-number { font-size: 0.8rem; }
+            .calendar-day-score { font-size: 0.6rem; padding: 2px 4px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="logo">Hub Pessoal</div>
+        <div class="nav-section">
+            <div class="nav-label">Inicio</div>
+            <div class="nav-item active" data-page="dashboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                <span>Dashboard</span>
+            </div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Tarefas</div>
+            <div class="nav-item" data-page="afazeres">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                <span>Afazeres</span>
+            </div>
+            <div class="nav-item" data-page="checklist">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg>
+                <span>Check-list</span>
+            </div>
+            <div class="nav-item" data-page="atrasados">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <span>Atrasados</span>
+                <span class="nav-badge" id="nav-atrasados-badge" style="display:none;">0</span>
+            </div>
+            <div class="nav-item" data-page="notas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>Notas</span>
+            </div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Gestao</div>
+            <div class="nav-item" data-page="metas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <span>Metas</span>
+            </div>
+            <div class="nav-item" data-page="financeiro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span>Financas</span>
+            </div>
+        </div>
+        <div class="nav-section">
+            <div class="nav-label">Analise</div>
+            <div class="nav-item" data-page="historico">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17l-5-5-4 4-5-5"/></svg>
+                <span>Historico</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main">
+        <!-- DASHBOARD -->
+        <div class="page active" id="dashboard">
+            <div class="page-header">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle" id="dash-date"></p>
+            </div>
+            
+            <!-- 1. Score e Resumo no TOPO -->
+            <div class="grid grid-2">
+                <div class="card card-glow score-card">
+                    <div class="score-ring" style="--score: 0">
+                        <span class="score-value" id="dash-score">0%</span>
+                    </div>
+                    <div class="score-label">Conclusao do Dia</div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <span class="card-title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            Resumo do Dia
+                        </span>
+                    </div>
+                    <div class="grid grid-2" style="gap: 12px;">
+                        <div class="stat-box">
+                            <div class="stat-value accent" id="dash-checklist">0/0</div>
+                            <div class="stat-label">Check-list</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value accent" id="dash-afazeres">0/0</div>
+                            <div class="stat-label">Afazeres</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value success" id="dash-lucro">R$ 0</div>
+                            <div class="stat-label">Lucro Mes</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-value danger" id="dash-gasto">R$ 0</div>
+                            <div class="stat-label">Gastos Mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 2. Metas em Destaque -->
+            <div class="section-header">Metas em Destaque</div>
+            <div class="grid grid-3" id="dash-metas-starred"></div>
+            
+            <!-- 3. Tarefas de Hoje -->
+            <div class="section-header">Tarefas de Hoje</div>
+            <div class="card">
+                <div id="dash-tasks"></div>
+            </div>
+            
+            <!-- 4. Outras Metas -->
+            <div class="section-header">Outras Metas</div>
+            <div class="grid grid-3" id="dash-metas-other"></div>
+        </div>
+
+        <!-- AFAZERES -->
+        <div class="page" id="afazeres">
+            <div class="page-header">
+                <h1 class="page-title">Afazeres</h1>
+                <p class="page-subtitle">Tarefas com data e etapas (arraste para reordenar)</p>
+            </div>
+            <button class="btn" onclick="openModal('afazer-modal')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Novo Afazer
+            </button>
+            <div class="card" style="margin-top: 24px;">
+                <div id="afazeres-list"></div>
+            </div>
+        </div>
+
+        <!-- CHECKLIST -->
+        <div class="page" id="checklist">
+            <div class="page-header">
+                <h1 class="page-title">Check-list</h1>
+                <p class="page-subtitle">Rotinas recorrentes (arraste para reordenar)</p>
+            </div>
+            <button class="btn" onclick="openModal('checklist-modal')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Rotina
+            </button>
+            <div class="card" style="margin-top: 24px;">
+                <div id="checklist-list"></div>
+            </div>
+        </div>
+
+        <!-- ATRASADOS -->
+        <div class="page" id="atrasados">
+            <div class="page-header">
+                <h1 class="page-title">Atrasados</h1>
+                <p class="page-subtitle">Afazeres que passaram da data</p>
+            </div>
+            <div class="card">
+                <div id="atrasados-list"></div>
+            </div>
+        </div>
+
+        <!-- NOTAS -->
+        <div class="page" id="notas">
+            <div class="page-header">
+                <h1 class="page-title">Notas</h1>
+                <p class="page-subtitle">Ideias, pensamentos e anotacoes</p>
+            </div>
+            <button class="btn" onclick="openModal('nota-modal')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Nota
+            </button>
+            <div class="card" style="margin-top: 24px;">
+                <div id="notas-list"></div>
+            </div>
+        </div>
+
+        <!-- METAS -->
+        <div class="page" id="metas">
+            <div class="page-header">
+                <h1 class="page-title">Metas</h1>
+                <p class="page-subtitle">Clique na estrela para destacar no dashboard</p>
+            </div>
+            <button class="btn" onclick="openModal('meta-modal')">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Nova Meta
+            </button>
+            <div class="card" style="margin-top: 24px;">
+                <div class="grid grid-2" id="metas-list"></div>
+            </div>
+        </div>
+
+        <!-- FINANCEIRO -->
+        <div class="page" id="financeiro">
+            <div class="page-header">
+                <h1 class="page-title">Financas</h1>
+                <p class="page-subtitle">Controle de lucros, gastos e investimentos</p>
+            </div>
+            
+            <!-- Resumo Geral -->
+            <div class="grid grid-4" style="margin-bottom: 24px;">
+                <div class="stat-box">
+                    <div class="stat-value success" id="fin-lucro">R$ 0</div>
+                    <div class="stat-label">Lucro do Mes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value danger" id="fin-gasto">R$ 0</div>
+                    <div class="stat-label">Gastos do Mes</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value warning" id="fin-fixos">R$ 0</div>
+                    <div class="stat-label">Gastos Fixos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value accent" id="fin-saldo">R$ 0</div>
+                    <div class="stat-label">Saldo</div>
+                </div>
+            </div>
+            
+            <!-- Investimentos e Gastos Fixos em LINHA UNICA -->
+            <div class="grid grid-2" style="margin-bottom: 24px;">
+                <!-- Investimentos Resumo -->
+                <div class="card" style="margin-bottom: 0; cursor: pointer;" onclick="openModal('investimentos-list-modal')">
+                    <div class="card-header" style="margin-bottom: 12px;">
+                        <span class="card-title">Investimentos</span>
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); openModal('investimento-modal')">+ Novo</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Total Investido</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--accent-light);" id="inv-total">R$ 0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Esperado</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--success-light);" id="inv-esperado">R$ 0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Rendimento</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: var(--warning);" id="inv-rendimento">0%</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; text-align: center;">Clique para ver detalhes</div>
+                </div>
+                
+                <!-- Gastos Fixos Resumo -->
+                <div class="card" style="margin-bottom: 0; cursor: pointer;" onclick="openModal('gastos-fixos-list-modal')">
+                    <div class="card-header" style="margin-bottom: 12px;">
+                        <span class="card-title">Gastos Fixos Mensais</span>
+                        <button class="btn btn-sm" onclick="event.stopPropagation(); openModal('gasto-fixo-modal')">+ Novo</button>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Total Fixo/Mes</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--danger-light);" id="fin-fixos-total">R$ 0</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Itens</div>
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--text-secondary);" id="fin-fixos-count">0</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; text-align: center;">Clique para ver detalhes</div>
+                </div>
+            </div>
+            
+            <!-- Adicionar Transacao -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Adicionar Transacao</span>
+                </div>
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label class="form-label">Descricao</label>
+                        <input type="text" id="fin-desc" class="form-input" placeholder="Ex: Venda produto">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Valor</label>
+                        <input type="number" id="fin-valor" class="form-input" placeholder="100.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select id="fin-tipo" class="form-input">
+                            <option value="lucro">Lucro</option>
+                            <option value="gasto">Gasto</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Data</label>
+                        <input type="date" id="fin-data" class="form-input">
+                    </div>
+                    <button class="btn" onclick="addFinanceiro()">Adicionar</button>
+                </div>
+            </div>
+            
+            <!-- Filtro -->
+            <div class="filter-row">
+                <div class="form-group">
+                    <label class="form-label">De:</label>
+                    <input type="date" id="fin-filter-de" class="form-input" onchange="renderFinanceiro()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ate:</label>
+                    <input type="date" id="fin-filter-ate" class="form-input" onchange="renderFinanceiro()">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tipo:</label>
+                    <select id="fin-filter-tipo" class="form-input" onchange="renderFinanceiro()">
+                        <option value="todos">Todos</option>
+                        <option value="lucro">Lucros</option>
+                        <option value="gasto">Gastos</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="clearFinFilter()">Limpar</button>
+            </div>
+            
+            <!-- Lista de Transacoes -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title">Registro de Transacoes</span>
+                </div>
+                <div id="financeiro-list"></div>
+            </div>
+        </div>
+
+        <!-- HISTORICO -->
+        <div class="page" id="historico">
+            <div class="page-header">
+                <h1 class="page-title">Historico</h1>
+                <p class="page-subtitle">Analise seu desempenho mensal</p>
+            </div>
+            
+            <!-- Resumo do Mes -->
+            <div class="month-summary" id="month-summary">
+                <div class="month-stat">
+                    <div class="month-stat-value accent" id="month-avg-score">0%</div>
+                    <div class="month-stat-label">Media do Mes</div>
+                </div>
+                <div class="month-stat">
+                    <div class="month-stat-value success" id="month-best-score">0%</div>
+                    <div class="month-stat-label">Melhor Dia</div>
+                </div>
+                <div class="month-stat">
+                    <div class="month-stat-value" id="month-days-done">0</div>
+                    <div class="month-stat-label">Dias Completos</div>
+                </div>
+                <div class="month-stat">
+                    <div class="month-stat-value warning" id="month-streak">0</div>
+                    <div class="month-stat-label">Sequencia Atual</div>
+                </div>
+            </div>
+            
+            <!-- Calendario -->
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button class="calendar-nav-btn" onclick="changeMonth(-1)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+                    </button>
+                    <span class="calendar-title" id="calendar-month-title">Dezembro 2025</span>
+                    <button class="calendar-nav-btn" onclick="changeMonth(1)">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                    </button>
+                </div>
+                <div class="calendar-weekdays">
+                    <div class="calendar-weekday">Dom</div>
+                    <div class="calendar-weekday">Seg</div>
+                    <div class="calendar-weekday">Ter</div>
+                    <div class="calendar-weekday">Qua</div>
+                    <div class="calendar-weekday">Qui</div>
+                    <div class="calendar-weekday">Sex</div>
+                    <div class="calendar-weekday">Sab</div>
+                </div>
+                <div class="calendar-days" id="calendar-days"></div>
+                <div class="calendar-legend">
+                    <div class="legend-item"><div class="legend-dot high"></div> 80-100%</div>
+                    <div class="legend-item"><div class="legend-dot medium"></div> 50-79%</div>
+                    <div class="legend-item"><div class="legend-dot low"></div> 0-49%</div>
+                </div>
+            </div>
+            
+            <!-- Detalhes do Dia Selecionado -->
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header">
+                    <span class="card-title">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <span id="hist-selected-date">Selecione um dia</span>
+                    </span>
+                </div>
+                <div class="grid grid-4" id="hist-stats" style="margin-bottom: 20px;"></div>
+                <div id="hist-details"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODALS -->
+    
+    <!-- Modal Afazer -->
+    <div class="modal-backdrop" id="afazer-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="afazer-modal-title">Novo Afazer</h2>
+                <button class="modal-close" onclick="closeModal('afazer-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="afazer-edit-id">
+            <div class="form-group">
+                <label class="form-label">Nome do Afazer *</label>
+                <input type="text" id="afazer-nome" class="form-input" placeholder="Ex: Entregar relatorio">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Detalhes</label>
+                <input type="text" id="afazer-detalhes" class="form-input" placeholder="Informacoes adicionais">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Data *</label>
+                    <input type="date" id="afazer-data" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Horario (opcional)</label>
+                    <input type="time" id="afazer-hora" class="form-input">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Etapas (opcional)</label>
+                <div class="subtask-input-group">
+                    <div class="subtask-input-row">
+                        <input type="text" id="subtask-input" placeholder="Nome da etapa" onkeypress="if(event.key==='Enter')addSubtask()">
+                        <button class="btn btn-sm" onclick="addSubtask()">+</button>
+                    </div>
+                    <div class="subtasks-preview" id="subtasks-preview"></div>
+                </div>
+            </div>
+            <button class="btn" onclick="saveAfazer()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Checklist -->
+    <div class="modal-backdrop" id="checklist-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="checklist-modal-title">Nova Rotina</h2>
+                <button class="modal-close" onclick="closeModal('checklist-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="checklist-edit-id">
+            <div class="form-group">
+                <label class="form-label">Nome da Rotina *</label>
+                <input type="text" id="check-nome" class="form-input" placeholder="Ex: Exercicios">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Descricao</label>
+                <input type="text" id="check-desc" class="form-input" placeholder="Informacoes adicionais">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Dias da Semana</label>
+                <div class="days-grid">
+                    <button type="button" class="day-btn" data-day="0">Dom</button>
+                    <button type="button" class="day-btn" data-day="1">Seg</button>
+                    <button type="button" class="day-btn" data-day="2">Ter</button>
+                    <button type="button" class="day-btn" data-day="3">Qua</button>
+                    <button type="button" class="day-btn" data-day="4">Qui</button>
+                    <button type="button" class="day-btn" data-day="5">Sex</button>
+                    <button type="button" class="day-btn" data-day="6">Sab</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Vincular a Meta (opcional)</label>
+                <select id="check-meta" class="form-input">
+                    <option value="">Nenhuma</option>
+                </select>
+            </div>
+            <button class="btn" onclick="saveChecklist()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Meta -->
+    <div class="modal-backdrop" id="meta-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="meta-modal-title">Nova Meta</h2>
+                <button class="modal-close" onclick="closeModal('meta-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="meta-edit-id">
+            <div class="form-group">
+                <label class="form-label">Nome da Meta *</label>
+                <input type="text" id="meta-nome" class="form-input" placeholder="Ex: Fazer 30 dias de exercicio">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tipo de Meta</label>
+                <select id="meta-tipo" class="form-input" onchange="toggleMetaFields()">
+                    <option value="checklist">Vinculada a Check-list</option>
+                    <option value="valor">Valor em Reais (Lucro)</option>
+                    <option value="manual">Manual (editar % direto)</option>
+                </select>
+            </div>
+            <!-- Campos para tipo CHECK-LIST -->
+            <div id="meta-checklist-group">
+                <div class="form-group">
+                    <label class="form-label">Vincular a qual Check-list?</label>
+                    <select id="meta-checklist" class="form-input">
+                        <option value="">Selecione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Quantas repeticoes para completar 100%?</label>
+                    <input type="number" id="meta-reps-alvo" class="form-input" placeholder="Ex: 30 (dias)">
+                </div>
+            </div>
+            <!-- Campos para tipo VALOR -->
+            <div id="meta-valor-group" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">Valor Alvo (R$)</label>
+                    <input type="number" id="meta-valor" class="form-input" placeholder="5000" step="0.01">
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-bottom: 16px;">O progresso sera calculado automaticamente com base nos lucros do mes</small>
+            </div>
+            <!-- Progresso manual -->
+            <div class="form-group" id="meta-progresso-group" style="display:none;">
+                <label class="form-label">Progresso Atual (%)</label>
+                <input type="number" id="meta-progresso" class="form-input" placeholder="0" min="0" max="100">
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-text">Meta Mensal (reseta todo mes)</span>
+                <div class="toggle" id="meta-mensal" onclick="this.classList.toggle('active')"></div>
+            </div>
+            <button class="btn" onclick="saveMeta()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Nota -->
+    <div class="modal-backdrop" id="nota-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="nota-modal-title">Nova Nota</h2>
+                <button class="modal-close" onclick="closeModal('nota-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="nota-edit-id">
+            <div class="form-group">
+                <label class="form-label">Titulo</label>
+                <input type="text" id="nota-titulo" class="form-input" placeholder="Titulo da nota">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Conteudo *</label>
+                <textarea id="nota-conteudo" class="form-input" rows="6" placeholder="Escreva sua ideia, pensamento..."></textarea>
+            </div>
+            <button class="btn" onclick="saveNota()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Gasto Fixo -->
+    <div class="modal-backdrop" id="gasto-fixo-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Gasto Fixo</h2>
+                <button class="modal-close" onclick="closeModal('gasto-fixo-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="gasto-fixo-edit-id">
+            <div class="form-group">
+                <label class="form-label">Nome *</label>
+                <input type="text" id="gasto-fixo-nome" class="form-input" placeholder="Ex: Aluguel">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Valor Mensal *</label>
+                <input type="number" id="gasto-fixo-valor" class="form-input" placeholder="1500" step="0.01">
+            </div>
+            <button class="btn" onclick="saveGastoFixo()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Investimento -->
+    <div class="modal-backdrop" id="investimento-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Investimento</h2>
+                <button class="modal-close" onclick="closeModal('investimento-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="investimento-edit-id">
+            <div class="form-group">
+                <label class="form-label">Nome *</label>
+                <input type="text" id="investimento-nome" class="form-input" placeholder="Ex: CDB Banco X">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Valor Investido *</label>
+                <input type="number" id="investimento-valor" class="form-input" placeholder="1000" step="0.01">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Valor Esperado</label>
+                <input type="number" id="investimento-esperado" class="form-input" placeholder="1100" step="0.01">
+            </div>
+            <button class="btn" onclick="saveInvestimento()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Editar Transacao -->
+    <div class="modal-backdrop" id="transacao-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Editar Transacao</h2>
+                <button class="modal-close" onclick="closeModal('transacao-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <input type="hidden" id="transacao-edit-id">
+            <div class="form-group">
+                <label class="form-label">Descricao</label>
+                <input type="text" id="transacao-desc" class="form-input">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Valor</label>
+                <input type="number" id="transacao-valor" class="form-input" step="0.01">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tipo</label>
+                <select id="transacao-tipo" class="form-input">
+                    <option value="lucro">Lucro</option>
+                    <option value="gasto">Gasto</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Data</label>
+                <input type="date" id="transacao-data" class="form-input">
+            </div>
+            <button class="btn" onclick="updateTransacao()" style="width: 100%;">Salvar</button>
+        </div>
+    </div>
+
+    <!-- Modal Lista de Investimentos -->
+    <div class="modal-backdrop" id="investimentos-list-modal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Meus Investimentos</h2>
+                <button class="modal-close" onclick="closeModal('investimentos-list-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <button class="btn" onclick="closeModal('investimentos-list-modal'); openModal('investimento-modal')" style="margin-bottom: 16px;">+ Novo Investimento</button>
+            <div id="investimentos-list-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Modal Lista de Gastos Fixos -->
+    <div class="modal-backdrop" id="gastos-fixos-list-modal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Gastos Fixos Mensais</h2>
+                <button class="modal-close" onclick="closeModal('gastos-fixos-list-modal')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <button class="btn" onclick="closeModal('gastos-fixos-list-modal'); openModal('gasto-fixo-modal')" style="margin-bottom: 16px;">+ Novo Gasto Fixo</button>
+            <div id="gastos-fixos-list-modal-content"></div>
+        </div>
+    </div>
+
+    <!-- Container de Confete -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Audio de Conquista -->
+    <audio id="achievement-sound" preload="auto">
+        <source src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdGOAq4OBcFd7gXWCkJeIeGNyZ3qMmouGdWh0Z3+UkYt9cHRpf5WUi350c2d7lJGKe3Z1aX2YlYp+dXJoe5KQiHh0c2h8ko+Hd3RzaHySkYh4dHNofZOSint1dGl/k5KKe3V0aX+Ukop7dXRpgJWTi3x1dWqBlZSMfXV2a4GWlI19dnZrgZaUjX12dmyCl5WOfnd3bIOYlpB/d3dvhJmXkH94d2+FmZeQf3h4cIabl5GAeXhxh5yYkoJ5eXGHnJiSgnl5cYedmZOCenlyiJ6Zk4N6eXOJn5qUhHt6c4qgm5SFfHp0i6GclYZ9e3WMop2Wh359dY2jnpaHfn12jaOeloh/fnaPpJ+XiX9+d5CloJiKgH94kaahmYuBgHmTp6KajIKAepOoo5qMgoB7lKmkm42DgXyVqqWcjoSCfZarpZ2OhIJ+l6ymnY+EgoKcqKGXh4N9m6mhmIiEfpqqoZmJhX+bq6Kai4V/nKyjm4yGgZ2to5yNh4GerqSdjoiCn6+lno+Ig6Cwpp+QiYOhsaefkYqEorKooJKLhaOzqaGTjIakta qhk4yGpbaqopSNh6a3q6OVjoiotqujlY6HqbiropSPh6q5rKSWj4mrua2klpCJrLqupp eRirC7r6iYko2wvLCpmJKOsbywqZmTjrK9samak5CzvbGqmpSRtL6yq5uVkrS+s6yclZO1v7SsnZaUtsDUv7Wdl5W3wdW/tp6Xl7jC1sC3n5iYucPXwLigmJm6xNjBuaGZmrvF2cG6opmau8bawbqimpu8x9rCu6Oam73I28O8o5ucvsnbw7yknJy+ytzDvKSdnb/L3MS9pZ2ewMvdxL6mnp/BzN7EvqafoMHN3sW+p5+hwc7exb+ooKLC0N/GwKmhosPS38bAqqGjw9Pgx8CroqTD1OHHwaylpMTU4cfBraWlxdXix8GtpqbF1uLIwq6mp8bX48jCr6enx9jjycOvp6jI2eTJw7CoqMna5MrEsaipydrlysSxqKrJ2+XKxbKpqsrb5svFsqmry9zmy8azqqvM3efMxrSqrM3e58zHtKutzd7ozce1rK3O3+nNyLWsrs/f6c7Itq2uz+Dqzsi3ra/Q4erPybeusNHh68/JuK+w0eHrz8m5r7HS4uzQyrqwsdLi7NDKurCy0+Pt0cu7sbPT4+3Ry7uxtNTk7tLMvLK11OTu0sy8s7XV5e/TzL2ztdbm79PNvrS21ufv1M2+tLbX5/DVzr+1t9jo8dXPv7W42On x1s/AtrnY6vLW0MG3utnq8tfQwbi62ur z19DCuLva6/PY0cO5u9vr89nRw7m83Ov02tLEur3d7PXa0sS7vd3s9dvTxby+3u3229PGvL/e7vfc1Me9wN/u997Ux77A4O/439XIvsHh7/nf1cnAweHw+eDWysHC4vH64NbKwsLj8frh18vDw+Tx++LYzMTE5PL749jNxMXl8/zj2c3FxuXz/OTazsXG5vT95NrOxsfm9f3l287Hx+f1/uXb0MjI6Pb+5tzQyMnp9/7m3NHIyen3/+fd0snK6vj/59/Tyszr+f/o39PLzOv5/+jf08vM6/oA6eDUzM3s+wDq4dXNze36AOrh1c3O7vsB6+LWzs/v/AHs49fP0O/9Auzj2M/R8P0C7eTZ0NHw/gLt5NnQ0fH+A+7l2tHS8v8D7uXa0dLy/wPv5tvS0/MABPDn3NPU9AAE8Ofc1NT0AQXx6N3V1fUBBfHo3dXW9QEF8end1tb2Agby6d7X1/YCBvLq3tfX9wMH8+rf2Nj4Awfz6t/Z2fgEB/Tr4Nna+QQI9Ovg2dr5BQj06+DZ2voFCfTs4drc+wUJ9O3h29z7Bgr17eLc3PwGCvXt4t3d/QYL9u7j3d7+Bwv27uPe3v4HDPH u5N/fAAgP9+7k3+AACA/38OTg4AEJEPjw5eHgAQkQ+PDl4eECChH58ebh4gIKEfnx5uLiAwoS+fLn4+MDCxL68+fk4wMLEvry5+TkBAwT+/Po5eQEDBP78+jl5QUNE/z06eXmBQ0U/PTp5uYFDRT89Onm5wYOFfz16ufnBg4V/fXr6OgHDxb99evp6AcPFv317OjpCBAW/vbs6ekIEBb+9uzp6QkRF//37errCREX//ft6usKEhj/9+7q7AoSGP/47ursChIYAPju6+0LEhkA+O/r7QsSGQD47+ztDBMZAPnw7O4MExoB+fDs7gwTGgH58OzvDRQaAfnx7e8NFBoC+fHt7w0UGgL68e3wDhUbAvry7vAOFRsC+vLu8A8VGwP68+/xDxYcA/rz7/EPFhwD+/Tv8RAWHAPw" type="audio/wav">
+    </audio>
+
+    <script>
+        // ==================== CONFIG ====================
+        const API_URL = 'http://localhost:3000/api';
+        const DB = { afazeres: 'afazeres', checklist: 'checklist', checkStatus: 'checkStatus', metas: 'metas', financeiro: 'financeiro', notas: 'notas', gastosFixos: 'gastosFixos', investimentos: 'investimentos' };
+        let dataCache = { afazeres: [], checklist: [], checkStatus: [], metas: [], financeiro: [], notas: [], gastosFixos: [], investimentos: [] };
+        let tempSubtasks = [];
+        let notifiedMilestones = {};
+
+        // ==================== HELPERS ====================
+        const get = (key) => dataCache[key] || [];
+        const set = (key, value) => { dataCache[key] = value; saveToAPI(); };
+        const genId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
+        const toDateKey = (d) => d.toISOString().split('T')[0];
+        const today = () => toDateKey(new Date());
+        const dayOfWeek = (d) => new Date(d + 'T12:00:00').getDay();
+        const formatDate = (d) => { const [y,m,day] = d.split('-'); return `${day}/${m}/${y}`; };
+        const formatMoney = (v) => 'R$ ' + (v||0).toFixed(2).replace('.', ',');
+
+        // ==================== API ====================
+        async function loadFromAPI() {
+            try {
+                const res = await fetch(`${API_URL}/data`);
+                const data = await res.json();
+                dataCache = { 
+                    afazeres: data.afazeres || [], 
+                    checklist: data.checklist || [], 
+                    checkStatus: data.checkStatus || [], 
+                    metas: data.metas || [], 
+                    financeiro: data.financeiro || [],
+                    notas: data.notas || [],
+                    gastosFixos: data.gastosFixos || [],
+                    investimentos: data.investimentos || []
+                };
+                localStorage.setItem('hubPessoalBackup', JSON.stringify(dataCache));
+            } catch (e) {
+                console.log('Offline - usando cache local');
+                const backup = localStorage.getItem('hubPessoalBackup');
+                if (backup) dataCache = JSON.parse(backup);
+            }
+        }
+
+        async function saveToAPI() {
+            try {
+                await fetch(`${API_URL}/data`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dataCache)
+                });
+                localStorage.setItem('hubPessoalBackup', JSON.stringify(dataCache));
+            } catch (e) {
+                localStorage.setItem('hubPessoalBackup', JSON.stringify(dataCache));
+            }
+        }
+
+        // ==================== NAVIGATION ====================
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                item.classList.add('active');
+                document.getElementById(item.dataset.page).classList.add('active');
+                render();
+            });
+        });
+
+        // ==================== MODAL ====================
+        function openModal(id, editData = null) {
+            document.getElementById(id).classList.add('active');
+            
+            if (id === 'afazer-modal') {
+                document.getElementById('afazer-modal-title').textContent = editData ? 'Editar Afazer' : 'Novo Afazer';
+                document.getElementById('afazer-edit-id').value = editData?.id || '';
+                document.getElementById('afazer-nome').value = editData?.nome || '';
+                document.getElementById('afazer-detalhes').value = editData?.detalhes || '';
+                document.getElementById('afazer-data').value = editData?.data || today();
+                document.getElementById('afazer-hora').value = editData?.hora || '';
+                tempSubtasks = editData?.subtasks ? [...editData.subtasks] : [];
+                renderSubtasksPreview();
+            }
+            
+            if (id === 'checklist-modal') {
+                document.getElementById('checklist-modal-title').textContent = editData ? 'Editar Rotina' : 'Nova Rotina';
+                document.getElementById('checklist-edit-id').value = editData?.id || '';
+                document.getElementById('check-nome').value = editData?.nome || '';
+                document.getElementById('check-desc').value = editData?.descricao || '';
+                document.querySelectorAll('.day-btn').forEach(btn => {
+                    btn.classList.toggle('active', editData?.dias?.includes(parseInt(btn.dataset.day)));
+                });
+                updateMetaSelect();
+                document.getElementById('check-meta').value = editData?.metaId || '';
+            }
+            
+            if (id === 'meta-modal') {
+                document.getElementById('meta-modal-title').textContent = editData ? 'Editar Meta' : 'Nova Meta';
+                document.getElementById('meta-edit-id').value = editData?.id || '';
+                document.getElementById('meta-nome').value = editData?.nome || '';
+                document.getElementById('meta-tipo').value = editData?.tipo || 'checklist';
+                document.getElementById('meta-valor').value = editData?.valorAlvo || '';
+                document.getElementById('meta-reps-alvo').value = editData?.repsAlvo || '';
+                document.getElementById('meta-progresso').value = editData?.progresso || 0;
+                document.getElementById('meta-mensal').classList.toggle('active', editData?.mensal);
+                updateChecklistSelect();
+                document.getElementById('meta-checklist').value = editData?.checklistId || '';
+                toggleMetaFields();
+            }
+            
+            if (id === 'nota-modal') {
+                document.getElementById('nota-modal-title').textContent = editData ? 'Editar Nota' : 'Nova Nota';
+                document.getElementById('nota-edit-id').value = editData?.id || '';
+                document.getElementById('nota-titulo').value = editData?.titulo || '';
+                document.getElementById('nota-conteudo').value = editData?.conteudo || '';
+            }
+            
+            if (id === 'gasto-fixo-modal') {
+                document.getElementById('gasto-fixo-edit-id').value = editData?.id || '';
+                document.getElementById('gasto-fixo-nome').value = editData?.nome || '';
+                document.getElementById('gasto-fixo-valor').value = editData?.valor || '';
+            }
+            
+            if (id === 'investimento-modal') {
+                document.getElementById('investimento-edit-id').value = editData?.id || '';
+                document.getElementById('investimento-nome').value = editData?.nome || '';
+                document.getElementById('investimento-valor').value = editData?.valor || '';
+                document.getElementById('investimento-esperado').value = editData?.esperado || '';
+            }
+            
+            if (id === 'transacao-modal' && editData) {
+                document.getElementById('transacao-edit-id').value = editData.id;
+                document.getElementById('transacao-desc').value = editData.descricao;
+                document.getElementById('transacao-valor').value = editData.valor;
+                document.getElementById('transacao-tipo').value = editData.tipo;
+                document.getElementById('transacao-data').value = editData.data || today();
+            }
+            
+            // Modais de lista
+            if (id === 'investimentos-list-modal') {
+                renderInvestimentosListModal();
+            }
+            
+            if (id === 'gastos-fixos-list-modal') {
+                renderGastosFixosListModal();
+            }
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            tempSubtasks = [];
+        }
+        
+        function renderInvestimentosListModal() {
+            const list = get(DB.investimentos);
+            document.getElementById('investimentos-list-modal-content').innerHTML = list.length ? list.map(i => `
+                <div class="gasto-fixo-item">
+                    <div>
+                        <div class="gasto-fixo-name">${i.nome}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 16px;">
+                        <div style="text-align: right;">
+                            <div style="color: var(--accent-light); font-weight: 600;">${formatMoney(i.valor)}</div>
+                            <div style="color: var(--success-light); font-size: 0.85rem;">Esperado: ${formatMoney(i.esperado)}</div>
+                        </div>
+                        <button class="task-btn" onclick="editInvestimento('${i.id}'); closeModal('investimentos-list-modal');">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="task-btn" onclick="deleteInvestimento('${i.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('') : '<div class="empty-state">Nenhum investimento cadastrado.</div>';
+        }
+        
+        function renderGastosFixosListModal() {
+            const list = get(DB.gastosFixos);
+            document.getElementById('gastos-fixos-list-modal-content').innerHTML = list.length ? list.map(g => `
+                <div class="gasto-fixo-item">
+                    <span class="gasto-fixo-name">${g.nome}</span>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span class="gasto-fixo-value">${formatMoney(g.valor)}</span>
+                        <button class="task-btn" onclick="editGastoFixo('${g.id}'); closeModal('gastos-fixos-list-modal');">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="task-btn" onclick="deleteGastoFixo('${g.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('') : '<div class="empty-state">Nenhum gasto fixo cadastrado.</div>';
+        }
+
+        // ==================== DAYS SELECTOR ====================
+        document.querySelectorAll('.day-btn').forEach(btn => {
+            btn.addEventListener('click', () => btn.classList.toggle('active'));
+        });
+
+        // ==================== META FIELDS ====================
+        function toggleMetaFields() {
+            const tipo = document.getElementById('meta-tipo').value;
+            document.getElementById('meta-checklist-group').style.display = tipo === 'checklist' ? 'block' : 'none';
+            document.getElementById('meta-valor-group').style.display = tipo === 'valor' ? 'block' : 'none';
+            document.getElementById('meta-progresso-group').style.display = tipo === 'manual' ? 'block' : 'none';
+        }
+
+        function updateMetaSelect() {
+            const select = document.getElementById('check-meta');
+            select.innerHTML = '<option value="">Nenhuma</option>';
+            get(DB.metas).filter(m => m.tipo === 'checklist').forEach(m => {
+                select.innerHTML += `<option value="${m.id}">${m.nome}</option>`;
+            });
+        }
+        
+        function updateChecklistSelect() {
+            const select = document.getElementById('meta-checklist');
+            select.innerHTML = '<option value="">Selecione...</option>';
+            get(DB.checklist).forEach(c => {
+                select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+            });
+        }
+
+        // ==================== SUBTASKS ====================
+        function addSubtask() {
+            const input = document.getElementById('subtask-input');
+            if (input.value.trim()) {
+                tempSubtasks.push({ nome: input.value.trim(), done: false });
+                input.value = '';
+                renderSubtasksPreview();
+            }
+        }
+
+        function removeSubtask(idx) {
+            tempSubtasks.splice(idx, 1);
+            renderSubtasksPreview();
+        }
+
+        function renderSubtasksPreview() {
+            const container = document.getElementById('subtasks-preview');
+            container.innerHTML = tempSubtasks.map((s, i) => `
+                <div class="subtask-preview-item">
+                    <span>${s.nome}</span>
+                    <button class="task-btn" onclick="removeSubtask(${i})">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ==================== CONFETTI & SOUND ====================
+        function playAchievementSound() {
+            try {
+                const sound = document.getElementById('achievement-sound');
+                sound.currentTime = 0;
+                sound.play();
+            } catch(e) {}
+        }
+
+        function showConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#8b5cf6', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                container.appendChild(confetti);
+            }
+            
+            playAchievementSound();
+            
+            setTimeout(() => container.innerHTML = '', 4000);
+        }
+
+        function showNotification(title, text, icon = '🎯') {
+            const existing = document.querySelector('.notification-popup');
+            if (existing) existing.remove();
+            
+            const popup = document.createElement('div');
+            popup.className = 'notification-popup';
+            popup.innerHTML = `
+                <div class="notification-title">${icon} ${title}</div>
+                <div class="notification-text">${text}</div>
+            `;
+            document.body.appendChild(popup);
+            
+            setTimeout(() => popup.remove(), 5000);
+        }
+
+        function checkMetaMilestones(meta, oldProgress) {
+            const milestones = [30, 50, 75, 100];
+            const key = meta.id;
+            
+            if (!notifiedMilestones[key]) notifiedMilestones[key] = [];
+            
+            milestones.forEach(m => {
+                if (meta.progresso >= m && oldProgress < m && !notifiedMilestones[key].includes(m)) {
+                    notifiedMilestones[key].push(m);
+                    const icons = { 30: '🚀', 50: '⭐', 75: '🔥', 100: '🏆' };
+                    const msgs = { 
+                        30: 'Voce ja completou 30%!', 
+                        50: 'Metade do caminho! Continue assim!', 
+                        75: 'Quase la! So faltam 25%!', 
+                        100: 'PARABENS! Meta concluida!' 
+                    };
+                    showNotification(meta.nome, msgs[m], icons[m]);
+                    if (m === 100) showConfetti();
+                }
+            });
+        }
+
+        // ==================== SAVE FUNCTIONS ====================
+        function saveAfazer() {
+            const editId = document.getElementById('afazer-edit-id').value;
+            const nome = document.getElementById('afazer-nome').value.trim();
+            const data = document.getElementById('afazer-data').value;
+            
+            if (!nome || !data) return alert('Preencha nome e data!');
+            
+            const afazer = {
+                id: editId || genId(),
+                nome,
+                detalhes: document.getElementById('afazer-detalhes').value.trim(),
+                data,
+                hora: document.getElementById('afazer-hora').value,
+                subtasks: tempSubtasks,
+                done: false
+            };
+            
+            let list = get(DB.afazeres);
+            if (editId) {
+                const idx = list.findIndex(a => a.id === editId);
+                if (idx !== -1) {
+                    afazer.done = list[idx].done;
+                    list[idx] = afazer;
+                }
+            } else {
+                list.push(afazer);
+            }
+            set(DB.afazeres, list);
+            closeModal('afazer-modal');
+            render();
+        }
+
+        function saveChecklist() {
+            const editId = document.getElementById('checklist-edit-id').value;
+            const nome = document.getElementById('check-nome').value.trim();
+            
+            if (!nome) return alert('Preencha o nome!');
+            
+            const dias = [];
+            document.querySelectorAll('.day-btn.active').forEach(btn => dias.push(parseInt(btn.dataset.day)));
+            
+            const item = {
+                id: editId || genId(),
+                nome,
+                descricao: document.getElementById('check-desc').value.trim(),
+                dias: dias.length ? dias : [0,1,2,3,4,5,6],
+                metaId: document.getElementById('check-meta').value
+            };
+            
+            let list = get(DB.checklist);
+            if (editId) {
+                const idx = list.findIndex(c => c.id === editId);
+                if (idx !== -1) list[idx] = item;
+            } else {
+                list.push(item);
+            }
+            set(DB.checklist, list);
+            closeModal('checklist-modal');
+            render();
+        }
+
+        function saveMeta() {
+            const editId = document.getElementById('meta-edit-id').value;
+            const nome = document.getElementById('meta-nome').value.trim();
+            
+            if (!nome) return alert('Preencha o nome!');
+            
+            const tipo = document.getElementById('meta-tipo').value;
+            let oldMeta = editId ? get(DB.metas).find(m => m.id === editId) : null;
+            let oldProgress = oldMeta?.progresso || 0;
+            
+            const meta = {
+                id: editId || genId(),
+                nome,
+                tipo,
+                checklistId: tipo === 'checklist' ? document.getElementById('meta-checklist').value : '',
+                repsAlvo: parseInt(document.getElementById('meta-reps-alvo').value) || 30,
+                valorAlvo: parseFloat(document.getElementById('meta-valor').value) || 0,
+                progresso: parseFloat(document.getElementById('meta-progresso').value) || 0,
+                mensal: document.getElementById('meta-mensal').classList.contains('active'),
+                starred: oldMeta?.starred || false,
+                currentValue: oldMeta?.currentValue || 0,
+                currentReps: oldMeta?.currentReps || 0
+            };
+            
+            // Para tipo checklist, calcular progresso inicial
+            if (tipo === 'checklist' && meta.checklistId) {
+                const checkStatus = get(DB.checkStatus);
+                const reps = checkStatus.filter(s => s.key.startsWith(meta.checklistId + '_')).length;
+                meta.currentReps = reps;
+                meta.progresso = Math.min(100, (reps / meta.repsAlvo) * 100);
+            }
+            
+            // Para tipo valor, calcular progresso com base no lucro
+            if (tipo === 'valor') {
+                const mes = today().substring(0, 7);
+                const lucroMes = get(DB.financeiro)
+                    .filter(f => f.tipo === 'lucro' && f.data?.startsWith(mes))
+                    .reduce((sum, f) => sum + f.valor, 0);
+                meta.currentValue = lucroMes;
+                meta.progresso = Math.min(100, (lucroMes / meta.valorAlvo) * 100);
+            }
+            
+            let list = get(DB.metas);
+            if (editId) {
+                const idx = list.findIndex(m => m.id === editId);
+                if (idx !== -1) list[idx] = meta;
+            } else {
+                list.push(meta);
+            }
+            set(DB.metas, list);
+            
+            checkMetaMilestones(meta, oldProgress);
+            
+            closeModal('meta-modal');
+            render();
+        }
+
+        function saveNota() {
+            const editId = document.getElementById('nota-edit-id').value;
+            const conteudo = document.getElementById('nota-conteudo').value.trim();
+            
+            if (!conteudo) return alert('Escreva algo!');
+            
+            const nota = {
+                id: editId || genId(),
+                titulo: document.getElementById('nota-titulo').value.trim(),
+                conteudo,
+                data: editId ? (get(DB.notas).find(n => n.id === editId)?.data || today()) : today()
+            };
+            
+            let list = get(DB.notas);
+            if (editId) {
+                const idx = list.findIndex(n => n.id === editId);
+                if (idx !== -1) list[idx] = nota;
+            } else {
+                list.unshift(nota);
+            }
+            set(DB.notas, list);
+            closeModal('nota-modal');
+            render();
+        }
+
+        function saveGastoFixo() {
+            const editId = document.getElementById('gasto-fixo-edit-id').value;
+            const nome = document.getElementById('gasto-fixo-nome').value.trim();
+            const valor = parseFloat(document.getElementById('gasto-fixo-valor').value);
+            
+            if (!nome || !valor) return alert('Preencha nome e valor!');
+            
+            const item = { id: editId || genId(), nome, valor };
+            
+            let list = get(DB.gastosFixos);
+            if (editId) {
+                const idx = list.findIndex(g => g.id === editId);
+                if (idx !== -1) list[idx] = item;
+            } else {
+                list.push(item);
+            }
+            set(DB.gastosFixos, list);
+            closeModal('gasto-fixo-modal');
+            render();
+        }
+
+        function saveInvestimento() {
+            const editId = document.getElementById('investimento-edit-id').value;
+            const nome = document.getElementById('investimento-nome').value.trim();
+            const valor = parseFloat(document.getElementById('investimento-valor').value);
+            
+            if (!nome || !valor) return alert('Preencha nome e valor!');
+            
+            const item = {
+                id: editId || genId(),
+                nome,
+                valor,
+                esperado: parseFloat(document.getElementById('investimento-esperado').value) || valor
+            };
+            
+            let list = get(DB.investimentos);
+            if (editId) {
+                const idx = list.findIndex(i => i.id === editId);
+                if (idx !== -1) list[idx] = item;
+            } else {
+                list.push(item);
+            }
+            set(DB.investimentos, list);
+            closeModal('investimento-modal');
+            render();
+        }
+
+        // ==================== FINANCEIRO ====================
+        function addFinanceiro() {
+            const desc = document.getElementById('fin-desc').value.trim();
+            const valor = parseFloat(document.getElementById('fin-valor').value);
+            const tipo = document.getElementById('fin-tipo').value;
+            const data = document.getElementById('fin-data').value || today();
+            
+            if (!desc || !valor) return alert('Preencha descricao e valor!');
+            
+            const item = { id: genId(), descricao: desc, valor, tipo, data };
+            let list = get(DB.financeiro);
+            list.unshift(item);
+            set(DB.financeiro, list);
+            
+            // Limpar campos
+            document.getElementById('fin-desc').value = '';
+            document.getElementById('fin-valor').value = '';
+            
+            // Sincronizar metas de valor
+            if (tipo === 'lucro') syncMetasValor();
+            
+            render();
+        }
+
+        function editTransacao(id) {
+            const item = get(DB.financeiro).find(f => f.id === id);
+            if (item) openModal('transacao-modal', item);
+        }
+
+        function updateTransacao() {
+            const id = document.getElementById('transacao-edit-id').value;
+            const item = {
+                id,
+                descricao: document.getElementById('transacao-desc').value.trim(),
+                valor: parseFloat(document.getElementById('transacao-valor').value),
+                tipo: document.getElementById('transacao-tipo').value,
+                data: document.getElementById('transacao-data').value
+            };
+            
+            let list = get(DB.financeiro);
+            const idx = list.findIndex(f => f.id === id);
+            if (idx !== -1) {
+                list[idx] = item;
+                set(DB.financeiro, list);
+            }
+            
+            closeModal('transacao-modal');
+            syncMetasValor();
+            render();
+        }
+
+        function deleteFinanceiro(id) {
+            if (!confirm('Excluir esta transacao?')) return;
+            set(DB.financeiro, get(DB.financeiro).filter(f => f.id !== id));
+            syncMetasValor();
+            render();
+        }
+
+        function clearFinFilter() {
+            document.getElementById('fin-filter-de').value = '';
+            document.getElementById('fin-filter-ate').value = '';
+            document.getElementById('fin-filter-tipo').value = 'todos';
+            renderFinanceiro();
+        }
+
+        function syncMetasValor() {
+            const mes = today().substring(0, 7);
+            const lucroMes = get(DB.financeiro)
+                .filter(f => f.tipo === 'lucro' && f.data?.startsWith(mes))
+                .reduce((sum, f) => sum + f.valor, 0);
+            
+            let metas = get(DB.metas);
+            let changed = false;
+            metas.forEach(m => {
+                if (m.tipo === 'valor' && m.mensal) {
+                    const oldProgress = m.progresso;
+                    m.currentValue = lucroMes;
+                    m.progresso = Math.min(100, (lucroMes / m.valorAlvo) * 100);
+                    checkMetaMilestones(m, oldProgress);
+                    changed = true;
+                }
+            });
+            if (changed) set(DB.metas, metas);
+        }
+
+        // ==================== DELETE FUNCTIONS ====================
+        function deleteAfazer(id) {
+            if (!confirm('Excluir este afazer?')) return;
+            set(DB.afazeres, get(DB.afazeres).filter(a => a.id !== id));
+            render();
+        }
+
+        function deleteChecklist(id) {
+            if (!confirm('Excluir esta rotina?')) return;
+            set(DB.checklist, get(DB.checklist).filter(c => c.id !== id));
+            render();
+        }
+
+        function deleteMeta(id) {
+            if (!confirm('Excluir esta meta?')) return;
+            set(DB.metas, get(DB.metas).filter(m => m.id !== id));
+            render();
+        }
+
+        function deleteNota(id) {
+            if (!confirm('Excluir esta nota?')) return;
+            set(DB.notas, get(DB.notas).filter(n => n.id !== id));
+            render();
+        }
+
+        function deleteGastoFixo(id) {
+            if (!confirm('Excluir este gasto fixo?')) return;
+            set(DB.gastosFixos, get(DB.gastosFixos).filter(g => g.id !== id));
+            render();
+        }
+
+        function deleteInvestimento(id) {
+            if (!confirm('Excluir este investimento?')) return;
+            set(DB.investimentos, get(DB.investimentos).filter(i => i.id !== id));
+            render();
+        }
+
+        // ==================== EDIT FUNCTIONS ====================
+        function editAfazer(id) {
+            const item = get(DB.afazeres).find(a => a.id === id);
+            if (item) openModal('afazer-modal', item);
+        }
+
+        function editChecklist(id) {
+            const item = get(DB.checklist).find(c => c.id === id);
+            if (item) openModal('checklist-modal', item);
+        }
+
+        function editMeta(id) {
+            const item = get(DB.metas).find(m => m.id === id);
+            if (item) openModal('meta-modal', item);
+        }
+
+        function editNota(id) {
+            const item = get(DB.notas).find(n => n.id === id);
+            if (item) openModal('nota-modal', item);
+        }
+
+        function editGastoFixo(id) {
+            const item = get(DB.gastosFixos).find(g => g.id === id);
+            if (item) openModal('gasto-fixo-modal', item);
+        }
+
+        function editInvestimento(id) {
+            const item = get(DB.investimentos).find(i => i.id === id);
+            if (item) openModal('investimento-modal', item);
+        }
+
+        // ==================== TOGGLE FUNCTIONS ====================
+        function toggleAfazer(id) {
+            let list = get(DB.afazeres);
+            const item = list.find(a => a.id === id);
+            if (item) {
+                const wasDone = item.done;
+                item.done = !item.done;
+                set(DB.afazeres, list);
+                if (!wasDone && item.done) showConfetti();
+                render();
+            }
+        }
+
+        function toggleSubtask(afazerId, subtaskIdx) {
+            let list = get(DB.afazeres);
+            const item = list.find(a => a.id === afazerId);
+            if (item && item.subtasks[subtaskIdx]) {
+                item.subtasks[subtaskIdx].done = !item.subtasks[subtaskIdx].done;
+                set(DB.afazeres, list);
+                render();
+            }
+        }
+
+        function toggleCheck(checkId) {
+            const key = `${checkId}_${today()}`;
+            let status = get(DB.checkStatus);
+            const exists = status.find(s => s.key === key);
+            
+            if (exists) {
+                status = status.filter(s => s.key !== key);
+                // Decrementar meta vinculada
+                updateMetasLinkedToChecklist(checkId, -1);
+            } else {
+                status.push({ key, date: today() });
+                // Incrementar meta vinculada
+                updateMetasLinkedToChecklist(checkId, 1);
+            }
+            set(DB.checkStatus, status);
+            render();
+        }
+        
+        function updateMetasLinkedToChecklist(checkId, delta) {
+            let metas = get(DB.metas);
+            let changed = false;
+            
+            metas.forEach(meta => {
+                if (meta.tipo === 'checklist' && meta.checklistId === checkId) {
+                    const oldProgress = meta.progresso;
+                    meta.currentReps = Math.max(0, (meta.currentReps || 0) + delta);
+                    meta.progresso = Math.min(100, (meta.currentReps / (meta.repsAlvo || 30)) * 100);
+                    checkMetaMilestones(meta, oldProgress);
+                    changed = true;
+                }
+            });
+            
+            if (changed) set(DB.metas, metas);
+        }
+
+        function toggleStar(id) {
+            let metas = get(DB.metas);
+            const meta = metas.find(m => m.id === id);
+            if (meta) {
+                meta.starred = !meta.starred;
+                set(DB.metas, metas);
+                render();
+            }
+        }
+
+        // ==================== DRAG & DROP ====================
+        function setupDragDrop(containerId, dataKey, renderFn) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('task-item') || e.target.classList.contains('meta-card')) {
+                    e.target.classList.add('dragging');
+                    e.dataTransfer.setData('text/plain', e.target.dataset.id);
+                }
+            });
+            
+            container.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+            });
+            
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const draggable = document.querySelector('.dragging');
+                const afterElement = getDragAfterElement(container, e.clientY);
+                if (afterElement) {
+                    afterElement.classList.add('drag-over');
+                }
+            });
+            
+            container.addEventListener('dragleave', (e) => {
+                e.target.classList.remove('drag-over');
+            });
+            
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                
+                const draggedId = e.dataTransfer.getData('text/plain');
+                const afterElement = getDragAfterElement(container, e.clientY);
+                
+                let data = get(dataKey);
+                const fromIdx = data.findIndex(item => item.id === draggedId);
+                const item = data.splice(fromIdx, 1)[0];
+                
+                if (afterElement) {
+                    const toIdx = data.findIndex(d => d.id === afterElement.dataset.id);
+                    data.splice(toIdx, 0, item);
+                } else {
+                    data.push(item);
+                }
+                
+                set(dataKey, data);
+                renderFn();
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('[draggable="true"]:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                }
+                return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        // ==================== RENDER ====================
+        function render() {
+            renderDashboard();
+            renderAfazeres();
+            renderChecklist();
+            renderAtrasados();
+            renderNotas();
+            renderMetas();
+            renderFinanceiro();
+            
+            // Setup drag and drop
+            setupDragDrop('afazeres-list', DB.afazeres, renderAfazeres);
+            setupDragDrop('checklist-list', DB.checklist, renderChecklist);
+            setupDragDrop('metas-list', DB.metas, renderMetas);
+        }
+
+        function renderDashboard() {
+            const todayKey = today();
+            const dow = dayOfWeek(todayKey);
+            
+            // Data
+            const dateStr = new Date().toLocaleDateString('pt-BR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('dash-date').textContent = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+            
+            // Checklist de hoje
+            const checklistHoje = get(DB.checklist).filter(c => c.dias.includes(dow));
+            const checkStatus = get(DB.checkStatus);
+            const checkDone = checklistHoje.filter(c => checkStatus.find(s => s.key === `${c.id}_${todayKey}`)).length;
+            
+            // Afazeres de hoje
+            const afazeresHoje = get(DB.afazeres).filter(a => a.data === todayKey);
+            const afazeresDone = afazeresHoje.filter(a => a.done).length;
+            
+            // Score
+            const totalTasks = checklistHoje.length + afazeresHoje.length;
+            const doneTasks = checkDone + afazeresDone;
+            const score = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+            
+            document.getElementById('dash-score').textContent = score + '%';
+            document.querySelector('.score-ring').style.setProperty('--score', score);
+            document.getElementById('dash-checklist').textContent = `${checkDone}/${checklistHoje.length}`;
+            document.getElementById('dash-afazeres').textContent = `${afazeresDone}/${afazeresHoje.length}`;
+            
+            // Financeiro do mes
+            const mes = todayKey.substring(0, 7);
+            const lucro = get(DB.financeiro).filter(f => f.tipo === 'lucro' && f.data?.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+            const gasto = get(DB.financeiro).filter(f => f.tipo === 'gasto' && f.data?.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+            document.getElementById('dash-lucro').textContent = formatMoney(lucro);
+            document.getElementById('dash-gasto').textContent = formatMoney(gasto);
+            
+            // Metas em destaque (starred)
+            const metasStarred = get(DB.metas).filter(m => m.starred).slice(0, 4);
+            document.getElementById('dash-metas-starred').innerHTML = metasStarred.length ? 
+                metasStarred.map(m => renderMetaCard(m, true)).join('') :
+                '<div class="empty-state" style="grid-column: 1/-1;">Nenhuma meta em destaque. Clique na estrela de uma meta para destaca-la.</div>';
+            
+            // Tarefas de hoje
+            let tasksHtml = '';
+            
+            // Primeiro check-list
+            checklistHoje.forEach(c => {
+                const isDone = checkStatus.find(s => s.key === `${c.id}_${todayKey}`);
+                tasksHtml += `
+                    <div class="task-item ${isDone ? 'completed' : ''}">
+                        <div class="task-checkbox ${isDone ? 'checked' : ''}" onclick="toggleCheck('${c.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-name">${c.nome}</div>
+                            ${c.descricao ? `<div class="task-detail">${c.descricao}</div>` : ''}
+                            <div class="task-meta">
+                                <span class="task-tag rotina">Rotina</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            // Depois afazeres com suas etapas
+            afazeresHoje.forEach(a => {
+                const subtasksDone = a.subtasks?.filter(s => s.done).length || 0;
+                const subtasksTotal = a.subtasks?.length || 0;
+                
+                tasksHtml += `
+                    <div class="task-item ${a.done ? 'completed' : ''}">
+                        <div class="task-checkbox ${a.done ? 'checked' : ''}" onclick="toggleAfazer('${a.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-name">${a.nome}</div>
+                            ${a.detalhes ? `<div class="task-detail">${a.detalhes}</div>` : ''}
+                            <div class="task-meta">
+                                <span class="task-tag afazer">Afazer</span>
+                                ${a.hora ? `<span class="task-tag">${a.hora}</span>` : ''}
+                            </div>
+                            ${subtasksTotal > 0 ? `
+                                <div class="subtask-list">
+                                    ${a.subtasks.map((s, idx) => `
+                                        <div class="subtask-item ${s.done ? 'completed' : ''}">
+                                            <div class="subtask-checkbox ${s.done ? 'checked' : ''}" onclick="toggleSubtask('${a.id}', ${idx})">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                            </div>
+                                            <span>${s.nome}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill ${subtasksDone === subtasksTotal ? 'complete' : ''}" style="width: ${(subtasksDone/subtasksTotal)*100}%"></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('dash-tasks').innerHTML = tasksHtml || '<div class="empty-state">Nenhuma tarefa para hoje!</div>';
+            
+            // Outras metas (nao starred)
+            const metasOther = get(DB.metas).filter(m => !m.starred);
+            document.getElementById('dash-metas-other').innerHTML = metasOther.length ?
+                metasOther.map(m => renderMetaCard(m, true)).join('') :
+                '<div class="empty-state" style="grid-column: 1/-1;">Nenhuma outra meta.</div>';
+        }
+
+        function renderMetaCard(m, compact = false) {
+            const progress = Math.min(100, m.progresso || 0);
+            return `
+                <div class="meta-card ${m.starred ? 'starred' : ''}" data-id="${m.id}" draggable="true">
+                    <div class="meta-card-header">
+                        <div>
+                            <div class="meta-card-title">${m.nome}</div>
+                            <div class="meta-card-type">${m.tipo === 'valor' ? 'Meta de Valor' : m.tipo === 'repeticoes' ? 'Repeticoes' : 'Percentual'}</div>
+                        </div>
+                        <div class="meta-card-progress">${Math.round(progress)}%</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill ${progress >= 100 ? 'complete' : ''}" style="width: ${progress}%"></div>
+                    </div>
+                    ${!compact ? `
+                        <div class="task-actions" style="margin-top: 12px; justify-content: flex-end;">
+                            <button class="task-btn star-btn ${m.starred ? 'active' : ''}" onclick="toggleStar('${m.id}')" title="Destacar">
+                                <svg viewBox="0 0 24 24" fill="${m.starred ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            </button>
+                            <button class="task-btn" onclick="editMeta('${m.id}')" title="Editar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="task-btn" onclick="deleteMeta('${m.id}')" title="Excluir">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        function renderAfazeres() {
+            const container = document.getElementById('afazeres-list');
+            const list = get(DB.afazeres);
+            
+            if (!list.length) {
+                container.innerHTML = '<div class="empty-state">Nenhum afazer cadastrado.</div>';
+                return;
+            }
+            
+            container.innerHTML = list.map(a => {
+                const subtasksDone = a.subtasks?.filter(s => s.done).length || 0;
+                const subtasksTotal = a.subtasks?.length || 0;
+                
+                return `
+                    <div class="task-item ${a.done ? 'completed' : ''}" data-id="${a.id}" draggable="true">
+                        <div class="task-checkbox ${a.done ? 'checked' : ''}" onclick="toggleAfazer('${a.id}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                        </div>
+                        <div class="task-content">
+                            <div class="task-name">${a.nome}</div>
+                            ${a.detalhes ? `<div class="task-detail">${a.detalhes}</div>` : ''}
+                            <div class="task-meta">
+                                <span class="task-tag">${formatDate(a.data)}</span>
+                                ${a.hora ? `<span class="task-tag">${a.hora}</span>` : ''}
+                                ${subtasksTotal > 0 ? `<span class="task-tag">${subtasksDone}/${subtasksTotal} etapas</span>` : ''}
+                            </div>
+                            ${subtasksTotal > 0 ? `
+                                <div class="subtask-list">
+                                    ${a.subtasks.map((s, idx) => `
+                                        <div class="subtask-item ${s.done ? 'completed' : ''}">
+                                            <div class="subtask-checkbox ${s.done ? 'checked' : ''}" onclick="toggleSubtask('${a.id}', ${idx})">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                                            </div>
+                                            <span>${s.nome}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="task-actions">
+                            <button class="task-btn" onclick="editAfazer('${a.id}')" title="Editar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="task-btn" onclick="deleteAfazer('${a.id}')" title="Excluir">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderChecklist() {
+            const container = document.getElementById('checklist-list');
+            const list = get(DB.checklist);
+            const diasNome = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
+            
+            if (!list.length) {
+                container.innerHTML = '<div class="empty-state">Nenhuma rotina cadastrada.</div>';
+                return;
+            }
+            
+            container.innerHTML = list.map(c => `
+                <div class="task-item" data-id="${c.id}" draggable="true">
+                    <div class="task-content">
+                        <div class="task-name">${c.nome}</div>
+                        ${c.descricao ? `<div class="task-detail">${c.descricao}</div>` : ''}
+                        <div class="task-meta">
+                            ${c.dias.map(d => `<span class="task-tag">${diasNome[d]}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn" onclick="editChecklist('${c.id}')" title="Editar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="task-btn" onclick="deleteChecklist('${c.id}')" title="Excluir">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAtrasados() {
+            const todayKey = today();
+            const atrasados = get(DB.afazeres).filter(a => !a.done && a.data < todayKey);
+            
+            // Atualizar badge
+            const badge = document.getElementById('nav-atrasados-badge');
+            if (atrasados.length > 0) {
+                badge.textContent = atrasados.length;
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
+            
+            const container = document.getElementById('atrasados-list');
+            if (!atrasados.length) {
+                container.innerHTML = '<div class="empty-state">Nenhum afazer atrasado! Otimo trabalho!</div>';
+                return;
+            }
+            
+            container.innerHTML = atrasados.map(a => `
+                <div class="task-item" data-id="${a.id}">
+                    <div class="task-checkbox" onclick="toggleAfazer('${a.id}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div class="task-content">
+                        <div class="task-name">${a.nome}</div>
+                        ${a.detalhes ? `<div class="task-detail">${a.detalhes}</div>` : ''}
+                        <div class="task-meta">
+                            <span class="task-tag atrasado">Atrasado: ${formatDate(a.data)}</span>
+                        </div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="task-btn" onclick="editAfazer('${a.id}')" title="Editar">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button class="task-btn" onclick="deleteAfazer('${a.id}')" title="Excluir">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderNotas() {
+            const container = document.getElementById('notas-list');
+            const list = get(DB.notas);
+            
+            if (!list.length) {
+                container.innerHTML = '<div class="empty-state">Nenhuma nota. Comece a escrever suas ideias!</div>';
+                return;
+            }
+            
+            container.innerHTML = list.map(n => `
+                <div class="note-card">
+                    ${n.titulo ? `<div class="task-name" style="margin-bottom: 8px;">${n.titulo}</div>` : ''}
+                    <div class="note-content">${n.conteudo}</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div class="note-date">${formatDate(n.data)}</div>
+                        <div class="task-actions">
+                            <button class="task-btn" onclick="editNota('${n.id}')" title="Editar">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="task-btn" onclick="deleteNota('${n.id}')" title="Excluir">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderMetas() {
+            const container = document.getElementById('metas-list');
+            const list = get(DB.metas);
+            
+            if (!list.length) {
+                container.innerHTML = '<div class="empty-state" style="grid-column: 1/-1;">Nenhuma meta cadastrada.</div>';
+                return;
+            }
+            
+            container.innerHTML = list.map(m => renderMetaCard(m, false)).join('');
+        }
+
+        function renderFinanceiro() {
+            const mes = today().substring(0, 7);
+            let list = get(DB.financeiro);
+            
+            // Calcular totais do mes
+            const lucroMes = list.filter(f => f.tipo === 'lucro' && f.data?.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+            const gastoMes = list.filter(f => f.tipo === 'gasto' && f.data?.startsWith(mes)).reduce((s, f) => s + f.valor, 0);
+            const gastosFixos = get(DB.gastosFixos).reduce((s, g) => s + g.valor, 0);
+            const saldo = lucroMes - gastoMes - gastosFixos;
+            
+            document.getElementById('fin-lucro').textContent = formatMoney(lucroMes);
+            document.getElementById('fin-gasto').textContent = formatMoney(gastoMes);
+            document.getElementById('fin-fixos').textContent = formatMoney(gastosFixos);
+            document.getElementById('fin-saldo').textContent = formatMoney(saldo);
+            document.getElementById('fin-saldo').className = `stat-value ${saldo >= 0 ? 'success' : 'danger'}`;
+            
+            // Investimentos
+            const invList = get(DB.investimentos);
+            const invTotal = invList.reduce((s, i) => s + i.valor, 0);
+            const invEsperado = invList.reduce((s, i) => s + i.esperado, 0);
+            const invRend = invTotal > 0 ? ((invEsperado - invTotal) / invTotal * 100).toFixed(1) : 0;
+            
+            document.getElementById('inv-total').textContent = formatMoney(invTotal);
+            document.getElementById('inv-esperado').textContent = formatMoney(invEsperado);
+            document.getElementById('inv-rendimento').textContent = invRend + '%';
+            
+            // Gastos fixos - resumo
+            document.getElementById('fin-fixos-total').textContent = formatMoney(gastosFixos);
+            document.getElementById('fin-fixos-count').textContent = get(DB.gastosFixos).length;
+            
+            // Aplicar filtros
+            const filterDe = document.getElementById('fin-filter-de').value;
+            const filterAte = document.getElementById('fin-filter-ate').value;
+            const filterTipo = document.getElementById('fin-filter-tipo').value;
+            
+            if (filterDe) list = list.filter(f => f.data >= filterDe);
+            if (filterAte) list = list.filter(f => f.data <= filterAte);
+            if (filterTipo !== 'todos') list = list.filter(f => f.tipo === filterTipo);
+            
+            // Ordenar por data (mais recente primeiro)
+            list.sort((a, b) => (b.data || '').localeCompare(a.data || ''));
+            
+            // Lista de transacoes
+            document.getElementById('financeiro-list').innerHTML = list.length ? list.map(f => `
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <h4>${f.descricao}</h4>
+                        <span>${f.data ? formatDate(f.data) : 'Sem data'}</span>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <span class="transaction-amount ${f.tipo === 'lucro' ? 'income' : 'expense'}">
+                            ${f.tipo === 'lucro' ? '+' : '-'} ${formatMoney(f.valor)}
+                        </span>
+                        <div class="transaction-actions">
+                            <button class="task-btn" onclick="editTransacao('${f.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button class="task-btn" onclick="deleteFinanceiro('${f.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('') : '<div class="empty-state">Nenhuma transacao encontrada.</div>';
+            
+            // Setar data padrao
+            if (!document.getElementById('fin-data').value) {
+                document.getElementById('fin-data').value = today();
+            }
+        }
+
+        // ==================== CALENDARIO HISTORICO ====================
+        let currentCalendarMonth = new Date().getMonth();
+        let currentCalendarYear = new Date().getFullYear();
+        let selectedHistDate = today();
+        
+        const monthNames = ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 
+                           'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+        
+        function getDayScore(date) {
+            const dow = dayOfWeek(date);
+            const checklistDia = get(DB.checklist).filter(c => c.dias.includes(dow));
+            const checkStatus = get(DB.checkStatus);
+            const checkDone = checklistDia.filter(c => checkStatus.find(s => s.key === `${c.id}_${date}`)).length;
+            const afazeresDia = get(DB.afazeres).filter(a => a.data === date);
+            const afazeresDone = afazeresDia.filter(a => a.done).length;
+            const total = checklistDia.length + afazeresDia.length;
+            const done = checkDone + afazeresDone;
+            return total > 0 ? Math.round((done / total) * 100) : null;
+        }
+        
+        function getScoreClass(score) {
+            if (score === null) return 'score-zero';
+            if (score >= 80) return 'score-high';
+            if (score >= 50) return 'score-medium';
+            return 'score-low';
+        }
+        
+        function changeMonth(delta) {
+            currentCalendarMonth += delta;
+            if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            } else if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            }
+            renderCalendar();
+            renderMonthSummary();
+        }
+        
+        function selectDate(date) {
+            selectedHistDate = date;
+            renderCalendar();
+            renderHistoricoDetails(date);
+        }
+        
+        function renderCalendar() {
+            const container = document.getElementById('calendar-days');
+            const titleEl = document.getElementById('calendar-month-title');
+            
+            titleEl.textContent = `${monthNames[currentCalendarMonth]} ${currentCalendarYear}`;
+            
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1).getDay();
+            const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
+            const todayStr = today();
+            
+            let html = '';
+            
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="calendar-day empty"></div>';
+            }
+            
+            // Days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isFuture = dateStr > todayStr;
+                const isToday = dateStr === todayStr;
+                const isSelected = dateStr === selectedHistDate;
+                const score = isFuture ? null : getDayScore(dateStr);
+                
+                let classes = 'calendar-day';
+                if (isFuture) classes += ' future';
+                if (isToday) classes += ' today';
+                if (isSelected) classes += ' selected';
+                
+                html += `
+                    <div class="${classes}" onclick="selectDate('${dateStr}')">
+                        <span class="calendar-day-number">${day}</span>
+                        ${!isFuture ? `<span class="calendar-day-score ${getScoreClass(score)}">${score !== null ? score + '%' : '-'}</span>` : ''}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = html;
+        }
+        
+        function renderMonthSummary() {
+            const todayStr = today();
+            const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
+            
+            let scores = [];
+            let daysComplete = 0;
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${currentCalendarYear}-${String(currentCalendarMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                if (dateStr > todayStr) break;
+                
+                const score = getDayScore(dateStr);
+                if (score !== null) {
+                    scores.push(score);
+                    if (score === 100) daysComplete++;
+                }
+            }
+            
+            // Media
+            const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+            
+            // Melhor dia
+            const bestScore = scores.length > 0 ? Math.max(...scores) : 0;
+            
+            // Sequencia atual (streak)
+            let streak = 0;
+            const checkToday = new Date(todayStr);
+            for (let i = 0; i < 365; i++) {
+                const checkDate = new Date(checkToday);
+                checkDate.setDate(checkDate.getDate() - i);
+                const dateStr = checkDate.toISOString().split('T')[0];
+                const score = getDayScore(dateStr);
+                if (score !== null && score >= 50) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+            
+            document.getElementById('month-avg-score').textContent = avgScore + '%';
+            document.getElementById('month-best-score').textContent = bestScore + '%';
+            document.getElementById('month-days-done').textContent = daysComplete;
+            document.getElementById('month-streak').textContent = streak;
+        }
+        
+        function renderHistoricoDetails(date) {
+            const dow = dayOfWeek(date);
+            
+            // Update title
+            document.getElementById('hist-selected-date').textContent = `Detalhes - ${formatDate(date)}`;
+            
+            // Checklist do dia
+            const checklistDia = get(DB.checklist).filter(c => c.dias.includes(dow));
+            const checkStatus = get(DB.checkStatus);
+            const checkDone = checklistDia.filter(c => checkStatus.find(s => s.key === `${c.id}_${date}`)).length;
+            
+            // Afazeres do dia
+            const afazeresDia = get(DB.afazeres).filter(a => a.data === date);
+            const afazeresDone = afazeresDia.filter(a => a.done).length;
+            
+            // Score
+            const total = checklistDia.length + afazeresDia.length;
+            const done = checkDone + afazeresDone;
+            const score = total > 0 ? Math.round((done / total) * 100) : 0;
+            
+            // Financeiro do dia
+            const lucro = get(DB.financeiro).filter(f => f.tipo === 'lucro' && f.data === date).reduce((s, f) => s + f.valor, 0);
+            const gasto = get(DB.financeiro).filter(f => f.tipo === 'gasto' && f.data === date).reduce((s, f) => s + f.valor, 0);
+            
+            document.getElementById('hist-stats').innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-value accent">${score}%</div>
+                    <div class="stat-label">Conclusao</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${checkDone}/${checklistDia.length}</div>
+                    <div class="stat-label">Check-list</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value">${afazeresDone}/${afazeresDia.length}</div>
+                    <div class="stat-label">Afazeres</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value ${lucro - gasto >= 0 ? 'success' : 'danger'}">${formatMoney(lucro - gasto)}</div>
+                    <div class="stat-label">Saldo do Dia</div>
+                </div>
+            `;
+            
+            let details = '';
+            
+            if (checklistDia.length > 0) {
+                details += '<h4 style="margin-bottom: 12px; color: var(--text-secondary);">Check-list</h4>';
+                checklistDia.forEach(c => {
+                    const isDone = checkStatus.find(s => s.key === `${c.id}_${date}`);
+                    details += `<div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                        <span style="color: ${isDone ? 'var(--success)' : 'var(--danger)'};">${isDone ? '✓' : '✗'}</span>
+                        <span>${c.nome}</span>
+                    </div>`;
+                });
+            }
+            
+            if (afazeresDia.length > 0) {
+                details += '<h4 style="margin: 20px 0 12px; color: var(--text-secondary);">Afazeres</h4>';
+                afazeresDia.forEach(a => {
+                    details += `<div style="padding: 8px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px;">
+                        <span style="color: ${a.done ? 'var(--success)' : 'var(--danger)'};">${a.done ? '✓' : '✗'}</span>
+                        <span>${a.nome}</span>
+                    </div>`;
+                });
+            }
+            
+            if (!details) {
+                details = '<div class="empty-state">Sem tarefas para este dia.</div>';
+            }
+            
+            document.getElementById('hist-details').innerHTML = details;
+        }
+
+        function renderHistorico() {
+            renderCalendar();
+            renderMonthSummary();
+            renderHistoricoDetails(selectedHistDate);
+        }
+
+        // ==================== INIT ====================
+        async function init() {
+            document.body.style.opacity = '0.5';
+            await loadFromAPI();
+            document.getElementById('fin-data').value = today();
+            render();
+            document.body.style.opacity = '1';
+            console.log('Hub Pessoal v5 iniciado!');
+            
+            // Heartbeat
+            setInterval(() => {
+                fetch(`${API_URL}/heartbeat`).catch(() => {});
+            }, 5000);
+        }
+        init();
+    </script>
+</body>
+</html>
