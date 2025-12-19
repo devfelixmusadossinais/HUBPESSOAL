@@ -585,14 +585,320 @@
         @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
         .notification-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
         .notification-text { color: var(--text-secondary); font-size: 0.9rem; }
-        /* Mobile */
+        /* Mobile - DOCK INFERIOR */
         @media (max-width: 768px) {
-            body { flex-direction: column; overflow-x: hidden; }
-            .sidebar { width: 100%; height: auto; position: relative; }
-            .main { margin-left: 0; padding: 20px; width: 100%; }
-            .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            body { 
+                flex-direction: column; 
+                overflow-x: hidden; 
+            }
+            
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 70px;
+                width: 100%;
+                flex-direction: row;
+                padding: 0 8px;
+                padding-bottom: env(safe-area-inset-bottom, 0px);
+                border-right: none;
+                border-top: 1px solid var(--border);
+                background: var(--bg-secondary);
+                z-index: 1000;
+                transition: transform 0.3s ease;
+                overflow-x: auto;
+                overflow-y: hidden;
+            }
+            
+            .sidebar.hidden {
+                transform: translateY(100%);
+            }
+            
+            .logo,
+            .nav-label,
+            #sync-status {
+                display: none;
+            }
+            
+            .nav-section {
+                display: flex;
+                flex: 1;
+                margin: 0;
+                gap: 0;
+            }
+            
+            .nav-item {
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 4px;
+                margin: 0;
+                padding: 8px 12px;
+                font-size: 0.6rem;
+                min-width: 60px;
+                border-radius: 8px;
+            }
+            
+            .nav-item span {
+                display: block;
+                font-size: 0.6rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                max-width: 60px;
+                text-align: center;
+            }
+            
+            .nav-item svg {
+                width: 22px;
+                height: 22px;
+            }
+            
+            .nav-badge {
+                position: absolute;
+                top: 2px;
+                right: 2px;
+                font-size: 0.6rem;
+                padding: 1px 5px;
+                min-width: 16px;
+            }
+            
+            .main {
+                margin-left: 0;
+                padding: 16px;
+                padding-bottom: 100px;
+                width: 100%;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            /* GRID MOBILE MELHORADO - 2 colunas no tablet */
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .form-row { flex-direction: column; }
             .inline-form { flex-direction: column; }
+            
+            .card {
+                padding: 16px;
+            }
+            
+            .score-ring {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .score-ring::before {
+                width: 95px;
+                height: 95px;
+            }
+            
+            .score-value {
+                font-size: 1.6rem;
+            }
+        }
+        
+        /* Mobile pequeno - 1 coluna */
+        @media (max-width: 480px) {
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                height: 65px;
+            }
+            
+            .nav-item {
+                padding: 6px 8px;
+                min-width: 50px;
+            }
+            
+            .nav-item span {
+                font-size: 0.55rem;
+                max-width: 50px;
+            }
+            
+            .nav-item svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+        
+        /* Botão toggle sidebar mobile */
+        .sidebar-toggle-btn {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: var(--shadow-md);
+            transition: all 0.2s;
+        }
+        
+        .sidebar-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .sidebar-toggle-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar-toggle-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            .sidebar.hidden + .main .sidebar-toggle-btn,
+            .sidebar.hidden ~ .sidebar-toggle-btn {
+                bottom: 16px;
+            }
+        }
+        
+        /* Check-in Diário Modal */
+        .checkin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+        
+        .checkin-modal.active {
+            display: flex;
+        }
+        
+        .checkin-content {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid var(--border);
+            animation: modalIn 0.3s ease;
+        }
+        
+        .checkin-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        
+        .checkin-subtitle {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 0.9rem;
+        }
+        
+        .checkin-question {
+            margin-bottom: 20px;
+        }
+        
+        .checkin-question label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+        
+        .checkin-options {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .checkin-option {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        
+        .checkin-option:hover {
+            border-color: var(--accent);
+            color: var(--text-primary);
+        }
+        
+        .checkin-option.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        .checkin-option.success.active {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        
+        .checkin-option.danger.active {
+            background: var(--danger);
+            border-color: var(--danger);
+        }
+        
+        .checkin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        
+        .checkin-actions .btn {
+            flex: 1;
+        }
+        
+        /* Streak badge para metas */
+        .streak-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: var(--warning-glow);
+            color: var(--warning);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .streak-badge.broken {
+            background: var(--danger-glow);
+            color: var(--danger);
+        }
+        
+        .streak-badge svg {
+            width: 14px;
+            height: 14px;
         }
         /* Empty state */
         .empty-state {
@@ -3268,6 +3574,189 @@
         // Event listener para auto-save do diario
         document.getElementById('diary-text')?.addEventListener('input', scheduleDiaryAutoSave);
 
+        // ==================== SIDEBAR TOGGLE (MOBILE) ====================
+        const SIDEBAR_KEY = "hub_sidebar_visible";
+
+        function toggleSidebar() {
+            const sb = document.querySelector(".sidebar");
+            const hidden = sb.classList.toggle("hidden");
+            localStorage.setItem(SIDEBAR_KEY, hidden ? "0" : "1");
+            
+            // Atualizar ícone do botão
+            const btn = document.querySelector(".sidebar-toggle-btn");
+            if (btn) {
+                btn.innerHTML = hidden ? 
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="2" stroke-linecap="round"/></svg>' :
+                    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/></svg>';
+            }
+        }
+
+        function initSidebarToggle() {
+            const sb = document.querySelector(".sidebar");
+            if (localStorage.getItem(SIDEBAR_KEY) === "0") {
+                sb.classList.add("hidden");
+            }
+        }
+
+        // ==================== METAS PROGRESSIVAS (STREAK) ====================
+        function hojeISO() {
+            return new Date().toISOString().slice(0, 10);
+        }
+
+        function validarMetasProgressivas() {
+            const metas = get(DB.metas);
+            const hoje = hojeISO();
+            let updated = false;
+            
+            metas.forEach(m => {
+                if (m.tipo !== 'progressiva') return;
+                if (!m.lastUpdate) return;
+                
+                const diff = Math.floor((new Date(hoje) - new Date(m.lastUpdate)) / 86400000);
+                if (diff >= 2) {
+                    m.streak = 0;
+                    updated = true;
+                }
+            });
+            
+            if (updated) {
+                set(DB.metas, metas);
+            }
+        }
+
+        function atualizarMetaProgressiva(metaId) {
+            const metas = get(DB.metas);
+            const meta = metas.find(m => m.id === metaId);
+            if (!meta) return;
+            
+            const hoje = hojeISO();
+            if (meta.lastUpdate === hoje) return;
+
+            const diff = meta.lastUpdate
+                ? Math.floor((new Date(hoje) - new Date(meta.lastUpdate)) / 86400000)
+                : 1;
+
+            meta.streak = diff === 1 ? (meta.streak || 0) + 1 : 1;
+            meta.lastUpdate = hoje;
+            
+            set(DB.metas, metas);
+            render();
+        }
+
+        // ==================== CHECK-IN DIÁRIO (1x/dia) ====================
+        const CHECKIN_KEY = "hub_daily_checkin";
+        let checkinData = {
+            horasSono: null,
+            nofap: null
+        };
+
+        function deveMostrarCheckin() {
+            return localStorage.getItem(CHECKIN_KEY) !== hojeISO();
+        }
+
+        function concluirCheckin() {
+            localStorage.setItem(CHECKIN_KEY, hojeISO());
+        }
+
+        function mostrarCheckinDiario() {
+            if (!deveMostrarCheckin()) return;
+            
+            const modal = document.getElementById('checkin-modal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+        }
+
+        function selecionarHorasSono(horas) {
+            checkinData.horasSono = horas;
+            document.querySelectorAll('.sono-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.horas === horas.toString());
+            });
+        }
+
+        function selecionarNofap(resposta) {
+            checkinData.nofap = resposta;
+            document.querySelectorAll('.nofap-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.resposta === resposta);
+            });
+        }
+
+        function salvarCheckin() {
+            const hoje = hojeISO();
+            
+            // Salvar dados do check-in
+            let checkins = JSON.parse(localStorage.getItem('hub_checkins') || '[]');
+            checkins.push({
+                date: hoje,
+                horasSono: checkinData.horasSono,
+                nofap: checkinData.nofap,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('hub_checkins', JSON.stringify(checkins));
+            
+            // Se NoFap = sim, criar/completar afazer
+            if (checkinData.nofap === 'sim') {
+                aplicarNoFap('sim');
+            } else if (checkinData.nofap === 'nao') {
+                aplicarNoFap('nao');
+            }
+            
+            // Marcar check-in como feito
+            concluirCheckin();
+            
+            // Fechar modal
+            fecharCheckin();
+            
+            // Mostrar notificação
+            showNotification('Check-in Salvo!', `Sono: ${checkinData.horasSono || '-'}h | NoFap: ${checkinData.nofap || '-'}`);
+            
+            // Reset
+            checkinData = { horasSono: null, nofap: null };
+        }
+
+        function adiarCheckin() {
+            fecharCheckin();
+        }
+
+        function fecharCheckin() {
+            const modal = document.getElementById('checkin-modal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // ==================== NOFAP → AFAZER AUTOMÁTICO ====================
+        function aplicarNoFap(resposta) {
+            const hoje = hojeISO();
+            let afazeres = get(DB.afazeres);
+
+            let task = afazeres.find(
+                t => t.template === "nofap" && t.data === hoje
+            );
+
+            if (!task) {
+                task = {
+                    id: genId(),
+                    nome: "✅ NoFap - Dia completado",
+                    data: hoje,
+                    done: false,
+                    template: "nofap",
+                    subtasks: []
+                };
+                afazeres.push(task);
+            }
+
+            if (resposta === "sim") {
+                task.done = true;
+                task.nome = "✅ NoFap - Dia completado";
+            } else if (resposta === "nao") {
+                task.done = false;
+                task.nome = "❌ NoFap - Dia perdido";
+            }
+            
+            set(DB.afazeres, afazeres);
+        }
+
         // ==================== INIT ====================
         async function init() {
             document.body.style.opacity = '0.5';
@@ -3276,10 +3765,60 @@
             loadTodayDiary();
             render();
             renderDiaryRecentEntries();
+            
+            // Inicializar novos recursos
+            initSidebarToggle();
+            validarMetasProgressivas();
+            
+            // Mostrar check-in diário após um breve delay
+            setTimeout(() => {
+                mostrarCheckinDiario();
+            }, 1000);
+            
             document.body.style.opacity = '1';
-            console.log('Hub Pessoal v7 - Supabase Cloud Edition iniciado!');
+            console.log('Hub Pessoal v8 - Mobile Enhanced Edition iniciado!');
         }
         init();
     </script>
+    
+    <!-- Botão Toggle Sidebar (Mobile) -->
+    <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Mostrar/Ocultar Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M6 18L18 6M6 6l12 12" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    </button>
+    
+    <!-- Modal Check-in Diário -->
+    <div id="checkin-modal" class="checkin-modal">
+        <div class="checkin-content">
+            <h2 class="checkin-title">🌅 Bom dia!</h2>
+            <p class="checkin-subtitle">Vamos começar o dia com algumas perguntas rápidas</p>
+            
+            <div class="checkin-question">
+                <label>😴 Quantas horas você dormiu?</label>
+                <div class="checkin-options">
+                    <button class="checkin-option sono-option" data-horas="4" onclick="selecionarHorasSono(4)">-4h</button>
+                    <button class="checkin-option sono-option" data-horas="5" onclick="selecionarHorasSono(5)">5h</button>
+                    <button class="checkin-option sono-option" data-horas="6" onclick="selecionarHorasSono(6)">6h</button>
+                    <button class="checkin-option sono-option" data-horas="7" onclick="selecionarHorasSono(7)">7h</button>
+                    <button class="checkin-option sono-option" data-horas="8" onclick="selecionarHorasSono(8)">8h+</button>
+                </div>
+            </div>
+            
+            <div class="checkin-question">
+                <label>🔥 Conseguiu manter o NoFap ontem?</label>
+                <div class="checkin-options">
+                    <button class="checkin-option nofap-option success" data-resposta="sim" onclick="selecionarNofap('sim')">✓ Sim</button>
+                    <button class="checkin-option nofap-option danger" data-resposta="nao" onclick="selecionarNofap('nao')">✗ Não</button>
+                    <button class="checkin-option nofap-option" data-resposta="depois" onclick="selecionarNofap('depois')">Depois</button>
+                </div>
+            </div>
+            
+            <div class="checkin-actions">
+                <button class="btn btn-secondary" onclick="adiarCheckin()">Responder Depois</button>
+                <button class="btn" onclick="salvarCheckin()">Salvar</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
